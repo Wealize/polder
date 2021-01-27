@@ -1,10 +1,15 @@
 terraform {
   required_version = ">= 0.12"
-  backend "s3" {
-    bucket = "polder-infra"
-    key = "global/terraform.tfstate"
-    region = "eu-central-1"
-    dynamodb_table = "polder-infra-locks"
-    encrypt = true
-  }
+}
+
+provider "aws" {
+  region = "eu-central-1"
+}
+
+variable "aws_access_key" {
+  default = ""
+}
+
+variable "aws_secret_key" {
+  default = ""
 }
