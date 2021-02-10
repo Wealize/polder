@@ -6,8 +6,9 @@ metadata:
   name: polder
   region: eu-central-1
 
-nodeGroups:
-  - name: ng-2
-    instanceType: t2.medium
+managedNodeGroups:
+  - name: "ng-small"
+    instanceTypes: ["t3.small", "t2.small", "t3a.small"]
     desiredCapacity: 2
     maxSize: 5
+    spot: true
