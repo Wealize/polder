@@ -32,11 +32,6 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          env:
-            {{- range $key, $val := .Values.dracoDeploy.env}}
-            - name: {{ $key }}
-              value: {{ $val | quote }}
-            {{- end}}
           resources:
             {{- toYaml .Values.dracoResources | nindent 12 }}
       {{- with .Values.nodeSelector }}

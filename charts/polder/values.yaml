@@ -8,13 +8,17 @@ dracoDeploy:
   repository: ging/fiware-draco
   pullPolicy: IfNotPresent
   tag: "1.3.4"
-  env:
-    mongo-url: ""
 
 orionDeploy:
   repository: fiware/orion
   pullPolicy: IfNotPresent
   tag: "2.5.2"
+  env:
+    ORION_MONGO_DB: ""
+    ORION_MONGO_HOST: ""
+    ORION_MONGO_USER: ""
+    ORION_MONGO_PASSWORD: ""
+    ORION_MONGO_SSL: "TRUE"
 
 imagePullSecrets: []
 nameOverride: ""
