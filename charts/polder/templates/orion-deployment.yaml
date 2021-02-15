@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   name: {{ .Values.orionDeploy.name }}
   labels:
-    - app: {{ .Values.orionDeploy.name }}
+    app: {{ .Values.orionDeploy.name }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      - app: {{ .Values.orionDeploy.name }}
+      app: {{ .Values.orionDeploy.name }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        - app: {{ .Values.orionDeploy.name }}
+        app: {{ .Values.orionDeploy.name }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

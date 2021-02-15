@@ -3,18 +3,18 @@ kind: Deployment
 metadata:
   name: draco
   labels:
-    - app: draco
+    app: draco
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      - app: draco
+      app: draco
   template:
     metadata:
       labels:
-        - app: draco
+        app: draco
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
