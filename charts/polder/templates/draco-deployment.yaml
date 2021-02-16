@@ -30,7 +30,7 @@ spec:
           imagePullPolicy: {{ .Values.dracoDeploy.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.dracoDeploy.containerPort }}
               protocol: TCP
           resources:
             {{- toYaml .Values.dracoResources | nindent 12 }}

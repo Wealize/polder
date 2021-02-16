@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.orionDeploy.name }}
+  name: broker
   labels:
-    app: {{ .Values.orionDeploy.name }}
+    {{- include "polder.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      app: {{ .Values.orionDeploy.name }}
+      {{- include "polder.labels" . | nindent 6 }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        app: {{ .Values.orionDeploy.name }}
+        {{- include "polder.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -39,16 +39,20 @@ spec:
             {{- end}}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.orionDeploy.containerPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /v2/entities
+              port: {{ .Values.orionDeploy.containerPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /v2/entities
+              port: {{ .Values.orionDeploy.containerPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
             {{- toYaml .Values.orionResources | nindent 12 }}
       {{- with .Values.nodeSelector }}
