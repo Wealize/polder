@@ -1,0 +1,21 @@
+ingress:
+  enabled: true
+  annotations:
+    alb.ingress.kubernetes.io/certificate-arn: ""
+  hosts:
+    - host: ""
+      paths:
+      - path: /*
+        backend:
+          serviceName: broker
+          servicePort: 1026
+
+autoscaling:
+  enabled: true
+
+orionDeploy:
+  env:
+    ORION_MONGO_HOST: ""
+    ORION_MONGO_USER: ""
+    ORION_MONGO_PASSWORD: ""
+    ORION_MONGO_DB: ""

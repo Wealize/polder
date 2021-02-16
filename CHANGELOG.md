@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Fix liveness probes failing in the k8s deployment and labels missmatch
+- Added k8s deployment instructions and override-values.yaml file example
+- Fixed liveness probes failing in the k8s deployment and labels missmatch
 - Added envvar to orion deployment
 - Added HorizontalPodAutoscaler templates for orion and draco
 - Added Terraform configuration for MongoDB Orion Broker and PostgreSQL database
