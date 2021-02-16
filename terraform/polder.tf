@@ -10,12 +10,53 @@ variable "polder_main_db_password" {
   default = ""
 }
 
-variable "polder_docdb_username" {
-  default = ""
+resource "aws_security_group" "ssh" {
+  name        = "default-ssh"
+  description = "Security group for nat instances that allows SSH and VPN traffic from internet"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
-variable "polder_docdb_password" {
-  default = ""
+resource "aws_security_group" "mongo" {
+  name        = "default-mongo"
+  description = "Security group mongo database"
+
+  ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "egress-tls" {
+  name        = "default-egress-tls"
+  description = "Default security group that allows inbound and outbound traffic from all instances in the VPC"
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "ping-ICMP" {
+  name        = "default-ping"
+  description = "Default security group that allows to ping the instance"
+
+  ingress {
+    from_port        = -1
+    to_port          = -1
+    protocol         = "icmp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 }
 
 resource "aws_db_instance" "polder_main_db" {
@@ -30,27 +71,27 @@ resource "aws_db_instance" "polder_main_db" {
   publicly_accessible  = true
 }
 
-resource "aws_docdb_cluster_instance" "polder_docdb_instances" {
-  count              = 1
-  identifier         = "polder-docdb-cluster-${count.index}"
-  cluster_identifier = aws_docdb_cluster.polder_broker_docdb.id
-  instance_class     = "db.t3.medium"
-}
-
-resource "aws_docdb_cluster" "polder_broker_docdb" {
-  cluster_identifier      = "polder-broker-docdb"
-  engine                  = "docdb"
-  master_username         = var.polder_docdb_username
-  master_password         = var.polder_docdb_password
-  backup_retention_period = 5
-  preferred_backup_window = "01:00-03:00"
-  skip_final_snapshot     = true
-}
-
 output "polder-main-db" {
   value = "postgres://${aws_db_instance.polder_main_db.username}:${aws_db_instance.polder_main_db.password}@${aws_db_instance.polder_main_db.endpoint}/${aws_db_instance.polder_main_db.name}"
 }
 
-output "polder-docdb" {
-  value = "mongo://${aws_docdb_cluster.polder_broker_docdb.endpoint}"
+resource "aws_instance" "polder-orion-mongo" {
+  ami           = "ami-06bceec69cfdd5146"  # MONGO 4.4 in Frankfurt eu-central-1
+  instance_type = "t2.medium"
+  key_name      = "polder"
+
+  vpc_security_group_ids = [
+    aws_security_group.ssh.id,
+    aws_security_group.mongo.id,
+    aws_security_group.egress-tls.id,
+    aws_security_group.ping-ICMP.id
+  ]
+
+  tags = {
+    Name = "polder-mongo"
+  }
+}
+
+output "polder-orion-mongo" {
+  value = "ssh ${aws_instance.polder-orion-mongo.public_ip}:22"
 }
