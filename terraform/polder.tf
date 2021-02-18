@@ -10,6 +10,18 @@ variable "polder_main_db_password" {
   default = ""
 }
 
+variable "wirecloud_db_name" {
+  default = ""
+}
+
+variable "wirecloud_db_username" {
+  default = ""
+}
+
+variable "wirecloud_db_password" {
+  default = ""
+}
+
 resource "aws_security_group" "ssh" {
   name        = "default-ssh"
   description = "Security group for nat instances that allows SSH and VPN traffic from internet"
@@ -71,12 +83,38 @@ resource "aws_security_group" "ping-ICMP" {
   }
 }
 
+resource "aws_db_instance" "wirecloud_db" {
+  allocated_storage    = 10
+  storage_type         = "gp2"
+  engine               = "postgres"
+  engine_version       = "12.4"
+  instance_class       = "db.t3.micro"
+
+  vpc_security_group_ids = [
+    aws_security_group.postgres.id,
+  ]
+
+  name                 = var.wirecloud_db_name
+  username             = var.wirecloud_db_username
+  password             = var.wirecloud_db_password
+  publicly_accessible  = true
+}
+
+output "wirecloud-db" {
+  value = "postgres://${aws_db_instance.wirecloud_db.username}:${aws_db_instance.wirecloud_db.password}@${aws_db_instance.wirecloud_db.endpoint}/${aws_db_instance.wirecloud_db.name}"
+}
+
 resource "aws_db_instance" "polder_main_db" {
   allocated_storage    = 10
   storage_type         = "gp2"
   engine               = "postgres"
   engine_version       = "12.4"
   instance_class       = "db.t3.micro"
+
+  vpc_security_group_ids = [
+    aws_security_group.postgres.id,
+  ]
+
   name                 = var.polder_main_db_name
   username             = var.polder_main_db_username
   password             = var.polder_main_db_password
@@ -95,7 +133,6 @@ resource "aws_instance" "polder-orion-mongo" {
   vpc_security_group_ids = [
     aws_security_group.ssh.id,
     aws_security_group.mongo.id,
-    aws_security_group.postgres.id,
     aws_security_group.egress-tls.id,
     aws_security_group.ping-ICMP.id
   ]
