@@ -22,6 +22,18 @@ resource "aws_security_group" "ssh" {
   }
 }
 
+resource "aws_security_group" "postgres" {
+  name        = "default-postgres"
+  description = "Security group postgres database"
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "mongo" {
   name        = "default-mongo"
   description = "Security group mongo database"
@@ -83,6 +95,7 @@ resource "aws_instance" "polder-orion-mongo" {
   vpc_security_group_ids = [
     aws_security_group.ssh.id,
     aws_security_group.mongo.id,
+    aws_security_group.postgres.id,
     aws_security_group.egress-tls.id,
     aws_security_group.ping-ICMP.id
   ]
