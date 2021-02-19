@@ -4,13 +4,15 @@ metadata:
   name: broker
   labels:
     {{- include "polder.labels" . | nindent 4 }}
+    app: broker
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      {{- include "polder.labels" . | nindent 6 }}
+      {{- include "polder.selectorLabels" . | nindent 6 }}
+      app: broker
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -19,6 +21,7 @@ spec:
     {{- end }}
       labels:
         {{- include "polder.labels" . | nindent 8 }}
+        app: broker
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -30,7 +33,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.orionDeploy.repository }}:{{ .Values.orionDeploy.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.orionDeploy.repository }}:{{ .Values.orionDeploy.tag }}"
           imagePullPolicy: {{ .Values.orionDeploy.pullPolicy }}
           env:
             {{- range $key, $val := .Values.orionDeploy.env}}

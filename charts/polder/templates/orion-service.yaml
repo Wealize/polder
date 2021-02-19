@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.name }}
+  name: {{ .Values.orionService.name }}
   labels:
     {{- include "polder.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.orionService.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.orionService.port }}
       targetPort: {{ .Values.orionDeploy.containerPort }}
       protocol: TCP
       name: http
   selector:
     {{- include "polder.selectorLabels" . | nindent 4 }}
+    app: broker

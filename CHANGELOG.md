@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Sort k8s resources labels
+- Added wirecloud deployment, service and ingress
 - Added wirecloud db and a remove postgres security group from mongo
 - Added k8s deployment instructions and override-values.yaml file example
 - Fixed liveness probes failing in the k8s deployment and labels missmatch

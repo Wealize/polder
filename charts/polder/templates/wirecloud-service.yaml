@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.wirecloudService.name }}
+  labels:
+    {{- include "polder.labels" . | nindent 4 }}
+    app: wirecloud
+spec:
+  type: {{ .Values.wirecloudService.type }}
+  ports:
+    - port: {{ .Values.wirecloudService.port }}
+      targetPort: {{ .Values.wirecloudDeploy.containerPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "polder.selectorLabels" . | nindent 4 }}
+    app: wirecloud

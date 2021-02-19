@@ -2,7 +2,10 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata: 
-  name: broker-scaler 
+  name: broker-scaler
+  labels:
+    {{- include "polder.labels" . | nindent 4 }}
+    app: broker
 spec: 
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}

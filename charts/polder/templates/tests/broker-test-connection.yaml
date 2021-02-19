@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "broker-test-connection"
+  labels:
+    {{- include "polder.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.orionService.name }}:{{ .Values.orionService.port }}']
+  restartPolicy: Never

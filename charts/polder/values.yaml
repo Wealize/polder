@@ -21,6 +21,18 @@ orionDeploy:
     ORION_MONGO_USER: ""
     ORION_MONGO_PASSWORD: ""
 
+wirecloudDeploy:
+  repository: fiware/wirecloud
+  pullPolicy: IfNotPresent
+  tag: "1.3"
+  containerPort: 80
+  env:
+    DEBUG: False
+    DB_HOST: ""
+    DB_USERNAME: ""
+    DB_PASSWORD: ""
+    FORWARDED_ALLOW_IPS: "*"
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -38,10 +50,15 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
+orionService:
   name: broker
   type: NodePort
   port: 1026
+
+wirecloudService:
+  name: wirecloud
+  type: NodePort
+  port: 80
 
 ingress:
   enabled: false
@@ -54,15 +71,17 @@ ingress:
   }
   hosts:
     - host: ""
-      paths: [
-        {
-          path: /*,
-          backend: {
+      paths:
+        - path: /*,
+          backend:
             serviceName: broker,
             servicePort: 1026
-          }
-        }
-      ]
+    - host: ""
+      paths:
+        - path: /*,
+          backend:
+            serviceName: wirecloud,
+            servicePort: 80
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -88,11 +107,19 @@ orionResources:
     cpu: 100m
     memory: 100Mi
 
+wirecloudResources:
+  limits:
+    cpu: 300m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: 90
   targetMemoryUtilizationPercentage: 90
 
 nodeSelector: {}

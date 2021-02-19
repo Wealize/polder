@@ -2,17 +2,17 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata: 
-  name: draco-scaler
+  name: wirecloud-scaler
   labels:
     {{- include "polder.labels" . | nindent 4 }}
-    app: draco
+    app: wirecloud
 spec: 
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   scaleTargetRef: 
     apiVersion: apps/v1 
     kind: Deployment
-    name: draco
+    name: wirecloud
   metrics: 
   - type: Resource
     resource: 

@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: draco
+  name: wirecloud
   labels:
-    app: draco
     {{- include "polder.labels" . | nindent 4 }}
+    app: wirecloud
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       {{- include "polder.selectorLabels" . | nindent 6 }}
-      app: draco
+      app: wirecloud
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -21,7 +21,7 @@ spec:
     {{- end }}
       labels:
         {{- include "polder.labels" . | nindent 8 }}
-        app: draco
+        app: wirecloud
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -30,17 +30,34 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: draco
+        - name: wirecloud
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.dracoDeploy.repository }}:{{ .Values.dracoDeploy.tag }}"
-          imagePullPolicy: {{ .Values.dracoDeploy.pullPolicy }}
+          image: "{{ .Values.wirecloudDeploy.repository }}:{{ .Values.wirecloudDeploy.tag  }}"
+          imagePullPolicy: {{ .Values.wirecloudDeploy.pullPolicy }}
+          env:
+            {{- range $key, $val := .Values.wirecloudDeploy.env}}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end}}
           ports:
             - name: http
-              containerPort: {{ .Values.dracoDeploy.containerPort }}
+              containerPort: {{ .Values.wirecloudDeploy.containerPort }}
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.wirecloudDeploy.containerPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.wirecloudDeploy.containerPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
-            {{- toYaml .Values.dracoResources | nindent 12 }}
+            {{- toYaml .Values.wirecloudResources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

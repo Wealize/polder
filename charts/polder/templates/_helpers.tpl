@@ -48,7 +48,6 @@ Selector labels
 {{- define "polder.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "polder.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: broker
 {{- end }}
 
 {{/*

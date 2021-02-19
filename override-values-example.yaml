@@ -5,10 +5,16 @@ ingress:
   hosts:
     - host: ""
       paths:
-      - path: /*
-        backend:
-          serviceName: broker
-          servicePort: 1026
+        - path: /*,
+          backend:
+            serviceName: broker,
+            servicePort: 1026
+    - host: ""
+      paths:
+        - path: /*,
+          backend:
+            serviceName: wirecloud,
+            servicePort: 80
 
 autoscaling:
   enabled: true
@@ -19,3 +25,9 @@ orionDeploy:
     ORION_MONGO_USER: ""
     ORION_MONGO_PASSWORD: ""
     ORION_MONGO_DB: ""
+
+wirecloudDeploy:
+  env:
+    DB_HOST: ""
+    DB_USERNAME: ""
+    DB_PASSWORD: ""
