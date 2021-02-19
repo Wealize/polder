@@ -73,13 +73,13 @@ ingress:
   hosts:
     - host: ""
       paths:
-        - path: /*,
+        - path: /*
           backend:
             serviceName: broker
             servicePort: 1026
     - host: ""
       paths:
-        - path: /*,
+        - path: /*
           backend:
             serviceName: wirecloud
             servicePort: 8000
@@ -110,10 +110,10 @@ orionResources:
 
 wirecloudResources:
   limits:
-    cpu: 300m
+    cpu: 600m
     memory: 800Mi
   requests:
-    cpu: 100m
+    cpu: 400m
     memory: 500Mi
 
 autoscaling:

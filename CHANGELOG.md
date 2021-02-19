@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed ingress path value typo
 - Added wirecloud deploy tunning and corrections
 - Sort k8s resources labels
 - Added wirecloud deployment, service and ingress

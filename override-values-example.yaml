@@ -5,13 +5,13 @@ ingress:
   hosts:
     - host: ""
       paths:
-        - path: /*,
+        - path: /*
           backend:
             serviceName: broker
             servicePort: 1026
     - host: ""
       paths:
-        - path: /*,
+        - path: /*
           backend:
             serviceName: wirecloud
             servicePort: 8000
