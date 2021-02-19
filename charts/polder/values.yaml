@@ -29,6 +29,7 @@ wirecloudDeploy:
   env:
     DEBUG: False
     DB_HOST: ""
+    DB_NAME: postgres
     DB_USERNAME: ""
     DB_PASSWORD: ""
     FORWARDED_ALLOW_IPS: "*"
