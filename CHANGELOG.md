@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added wirecloud deploy tunning and corrections
 - Sort k8s resources labels
 - Added wirecloud deployment, service and ingress
 - Added wirecloud db and a remove postgres security group from mongo

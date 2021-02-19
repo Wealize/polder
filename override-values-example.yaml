@@ -7,14 +7,14 @@ ingress:
       paths:
         - path: /*,
           backend:
-            serviceName: broker,
+            serviceName: broker
             servicePort: 1026
     - host: ""
       paths:
         - path: /*,
           backend:
-            serviceName: wirecloud,
-            servicePort: 80
+            serviceName: wirecloud
+            servicePort: 8000
 
 autoscaling:
   enabled: true

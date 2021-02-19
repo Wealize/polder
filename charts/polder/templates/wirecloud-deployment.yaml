@@ -46,16 +46,18 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /login
               port: {{ .Values.wirecloudDeploy.containerPort }}
-            initialDelaySeconds: 15
+            initialDelaySeconds: 25
             periodSeconds: 20
+            timeoutSeconds: 10
           readinessProbe:
             httpGet:
-              path: /
+              path: /login
               port: {{ .Values.wirecloudDeploy.containerPort }}
-            initialDelaySeconds: 5
+            initialDelaySeconds: 15
             periodSeconds: 10
+            timeoutSeconds: 10
           resources:
             {{- toYaml .Values.wirecloudResources | nindent 12 }}
       {{- with .Values.nodeSelector }}

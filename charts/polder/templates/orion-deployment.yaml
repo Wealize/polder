@@ -50,12 +50,14 @@ spec:
               port: {{ .Values.orionDeploy.containerPort }}
             initialDelaySeconds: 15
             periodSeconds: 20
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /v2/entities
               port: {{ .Values.orionDeploy.containerPort }}
             initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 5
           resources:
             {{- toYaml .Values.orionResources | nindent 12 }}
       {{- with .Values.nodeSelector }}
