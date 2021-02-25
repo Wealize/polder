@@ -14,7 +14,7 @@ ingress:
         - path: /*
           backend:
             serviceName: wirecloud
-            servicePort: 8000
+            servicePort: 80
 
 autoscaling:
   enabled: true
@@ -27,6 +27,7 @@ orionDeploy:
     ORION_MONGO_DB: ""
 
 wirecloudDeploy:
+  nginxConf: ""
   env:
     DB_HOST: ""
     DB_NAME: ""

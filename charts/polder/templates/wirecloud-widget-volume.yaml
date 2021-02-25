@@ -1,0 +1,16 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: wirecloud-widget-claim
+  labels:
+    app: wirecloud
+    {{- include "polder.labels" . | nindent 4 }}
+    
+spec:
+  storageClassName: efs-sc
+  volumeName: wirecloud-widget-volume
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.wirecloudDeploy.storage.capacity }}

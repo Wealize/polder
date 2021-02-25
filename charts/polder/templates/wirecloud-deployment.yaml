@@ -29,7 +29,51 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: static-files
+          emptyDir: {}
+        - name: wirecloud-data
+          persistentVolumeClaim:
+            claimName: wirecloud-widget-claim
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
       containers:
+        - name: nginx
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: nginx
+          imagePullPolicy: {{ .Values.wirecloudDeploy.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.wirecloudDeploy.containerPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.wirecloudDeploy.containerPort }}
+            initialDelaySeconds: 25
+            periodSeconds: 20
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.wirecloudDeploy.containerPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 10
+          resources:
+            {{- toYaml .Values.wirecloudResources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /etc/nginx/nginx.conf
+              readOnly: true
+              name: nginx-conf
+              subPath: nginx.conf
+            - mountPath: /var/www/static
+              name: static-files
         - name: wirecloud
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -42,24 +86,30 @@ spec:
             {{- end}}
           ports:
             - name: http
-              containerPort: {{ .Values.wirecloudDeploy.containerPort }}
+              containerPort: 8000
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /login
-              port: {{ .Values.wirecloudDeploy.containerPort }}
+              port: 8000
             initialDelaySeconds: 25
             periodSeconds: 20
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /login
-              port: {{ .Values.wirecloudDeploy.containerPort }}
+              port: 8000
             initialDelaySeconds: 15
             periodSeconds: 10
             timeoutSeconds: 10
           resources:
             {{- toYaml .Values.wirecloudResources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /var/www/static
+              name: static-files
+            - mountPath: /opt/wirecloud_instance/data
+              name: wirecloud-data
+              subPath: wirecloud-data
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
