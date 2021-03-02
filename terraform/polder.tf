@@ -22,6 +22,18 @@ variable "wirecloud_db_password" {
   default = ""
 }
 
+variable "keyrock_db_name" {
+  default = ""
+}
+
+variable "keyrock_db_username" {
+  default = ""
+}
+
+variable "keyrock_db_password" {
+  default = ""
+}
+
 resource "aws_security_group" "ssh" {
   name        = "default-ssh"
   description = "Security group for nat instances that allows SSH and VPN traffic from internet"
@@ -41,6 +53,18 @@ resource "aws_security_group" "postgres" {
   ingress {
     from_port   = 5432
     to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "mysql" {
+  name        = "default-mysql"
+  description = "Security group mysql database"
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -102,6 +126,27 @@ resource "aws_db_instance" "wirecloud_db" {
 
 output "wirecloud-db" {
   value = "postgres://${aws_db_instance.wirecloud_db.username}:${aws_db_instance.wirecloud_db.password}@${aws_db_instance.wirecloud_db.endpoint}/${aws_db_instance.wirecloud_db.name}"
+}
+
+resource "aws_db_instance" "keyrock_db" {
+  allocated_storage    = 10
+  storage_type         = "gp2"
+  engine               = "mysql"
+  engine_version       = "5.7.31"
+  instance_class       = "db.t3.micro"
+
+  vpc_security_group_ids = [
+    aws_security_group.mysql.id,
+  ]
+
+  name                 = var.keyrock_db_name
+  username             = var.keyrock_db_username
+  password             = var.keyrock_db_password
+  publicly_accessible  = true
+}
+
+output "keyrock-db" {
+  value = "mysql://${aws_db_instance.keyrock_db.username}:${aws_db_instance.keyrock_db.password}@${aws_db_instance.keyrock_db.endpoint}/${aws_db_instance.keyrock_db.name}"
 }
 
 resource "aws_db_instance" "polder_main_db" {

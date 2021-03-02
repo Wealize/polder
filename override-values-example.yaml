@@ -7,14 +7,20 @@ ingress:
       paths:
         - path: /*
           backend:
-            serviceName: broker
-            servicePort: 1026
+            serviceName: wilma
+            servicePort: 1027
     - host: ""
       paths:
         - path: /*
           backend:
             serviceName: wirecloud
             servicePort: 80
+    - host: ""
+      paths:
+        - path: /*
+          backend:
+            serviceName: keyrock
+            servicePort: 3000
 
 autoscaling:
   enabled: true
@@ -33,3 +39,24 @@ wirecloudDeploy:
     DB_NAME: ""
     DB_USERNAME: ""
     DB_PASSWORD: ""
+    FIWARE_IDM_PUBLIC_URL: ""
+    SOCIAL_AUTH_FIWARE_KEY: ""
+    SOCIAL_AUTH_FIWARE_SECRET: ""
+
+keyrockDeploy:
+  env:
+    IDM_DB_HOST: ""
+    IDM_HOST: ""
+    IDM_DB_NAME: ""
+    IDM_DB_PASS: ""
+    IDM_DB_USER: ""
+    IDM_ADMIN_USER: ""
+    IDM_ADMIN_EMAIL: ""
+    IDM_ADMIN_PASS: ""
+
+wilmaDeploy:
+  env:
+    PEP_PROXY_APP_ID: ""
+    PEP_PROXY_USERNAME: ""
+    PEP_PASSWORD: ""
+    PEP_PROXY_MAGIC_KEY: ""
