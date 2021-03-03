@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: orion-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "polder.labels" . | nindent 6 }}
+      app: broker
+  policyTypes:
+    - Ingress
+  ingress:
+  - from:
+      - podSelector:
+          matchLabels:
+            {{- include "polder.labels" . | nindent 12 }}
+            app: wilma

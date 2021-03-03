@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added ingress network policy to broker pods
 - Added mysql db for keyrock to terraform
 - Added keyrock and wilma integration
 - Use efs instead of ebs volume in wirecloud
