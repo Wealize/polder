@@ -49,6 +49,8 @@ keyrockDeploy:
     IDM_DB_HOST: ""
     IDM_HOST: ""
     IDM_PORT: 3000
+    IDM_SESSION_SECRET: ""
+    IDM_ENCRYPTION_KEY: ""
     IDM_DB_NAME: ""
     IDM_DB_PASS: ""
     IDM_DB_USER: ""
