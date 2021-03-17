@@ -73,7 +73,12 @@ spec:
               name: nginx-conf
               subPath: nginx.conf
             - mountPath: /var/www/static
+              readOnly: true
               name: static-files
+            - mountPath: /var/www/static/theme/wirecloud.defaulttheme/images/logos/
+              readOnly: true
+              name: wirecloud-data
+              subPath: wirecloud-logos
         - name: wirecloud
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
